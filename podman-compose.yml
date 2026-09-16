@@ -1,0 +1,75 @@
+# Podman Compose deployment of deepseek-v4-flash-0731 (ROCm, Strix Halo).
+#
+# One of the file-based deployment methods — the Makefile (`make deploy`),
+# this file, and the quadlet units all define the identical container
+# (name, image, port 8000, devices, IPC, volumes, env); see README.md.
+# Run exactly ONE of them at a time:
+#   1. this file                       -> podman compose up -d
+#   2. config/containers/systemd/...   -> quadlet (deepseek-v4-flash-0731.service)
+#
+#   podman compose up -d              # start (recreates if changed, like --replace)
+#   podman compose down               # stop & remove
+#   podman compose logs -f deepseek-v4-flash-0731
+#
+#   Name/image/port honor the same three overrides as `make deploy`
+#   (CONTAINER_NAME, IMAGE, PORT); the defaults below keep this file in
+#   lockstep with TAGS via `make sync`:
+#     CONTAINER_NAME=my-server IMAGE=your/image:tag PORT=9000 \
+#       podman compose up -d
+
+secrets:
+  huggingface-token:
+    external: true
+
+services:
+  deepseek-v4-flash-0731:
+    image: ${IMAGE:-localhost/deepseek-v4-flash-0731:v0.4.1-rocm-10.0.0}
+    container_name: ${CONTAINER_NAME:-deepseek-v4-flash-0731}
+    # Custom code to enable ipc: host in podman-compose. See fedora-setup.sh.
+    ipc: host
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8000}:8000"
+    devices:
+      - /dev/dri
+      - /dev/kfd
+    group_add:
+      - video
+      - render
+    security_opt:
+      - seccomp=unconfined
+    secrets:
+      - source: huggingface-token
+        type: env
+        target: HF_TOKEN
+    volumes:
+      - /home/nburr/.cache/huggingface/hub/:/root/.cache/huggingface/hub/:Z
+      - /home/nburr/.config/llama.cpp/:/root/.config/llama.cpp/:Z
+    environment:
+      # Model
+      LLAMA_ARG_HF_REPO: "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-IQ2_XXS"
+      LLAMA_ARG_ALIAS: "DeepSeek-V4-Flash"
+      # Server
+      LLAMA_ARG_LOG_TIMESTAMPS: "on"
+      LLAMA_ARG_HOST: "0.0.0.0"
+      LLAMA_ARG_PORT: "8000"
+      # Runtime
+      LLAMA_ARG_THREADS: "8"
+      LLAMA_ARG_LOAD_MODE: "auto"
+      LLAMA_ARG_FIT: "off"
+      LLAMA_ARG_N_GPU_LAYERS: "99"
+      LLAMA_ARG_CTX_SIZE: "262144"
+      LLAMA_ARG_FLASH_ATTN: "on"
+      LLAMA_ARG_N_PARALLEL: "1"
+      LLAMA_ARG_CONT_BATCHING: "on"
+      LLAMA_ARG_SPEC_TYPE: "draft-mtp"
+      LLAMA_ARG_CACHE_TYPE_K: "q8_0"
+      LLAMA_ARG_CACHE_TYPE_V: "q8_0"
+      # Features
+      LLAMA_ARG_UI: "on"
+      LLAMA_ARG_UI_MCP_PROXY: "on"
+      LLAMA_ARG_AGENT: "on"
+      LLAMA_ARG_TOOLS: "all"
+      LLAMA_ARG_REASONING: "on"
+      LLAMA_ARG_REASONING_EFFORT: "medium"
+      LLAMA_ARG_JINJA: "on"

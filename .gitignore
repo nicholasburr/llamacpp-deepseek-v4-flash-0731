@@ -1,0 +1,11 @@
+# editor / OS cruft
+.DS_Store
+*~
+*.swp
+
+# python
+__pycache__/
+
+# local scratch
+*.log
+tmp/

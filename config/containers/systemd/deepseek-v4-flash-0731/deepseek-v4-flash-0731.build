@@ -1,0 +1,22 @@
+[Unit]
+Description=Build deepseek-v4-flash-0731 image for ROCm Strix Halo
+Documentation=https://github.com/nicholasburr/llamacpp-deepseek-v4-flash-0731
+After=network-online.target
+Wants=network-online.target
+
+[Build]
+ImageTag=localhost/deepseek-v4-flash-0731:v0.4.1-rocm-10.0.0
+File=containers/Containerfile.deepseek-v4-flash-0731
+SetWorkingDirectory=/home/nburr/Desktop/fedora/llamacpp-deepseek-v4-flash-0731
+ForceRM=true
+BuildArg=FEDORA_VERSION=44
+BuildArg=ROCM_VERSION=10.0.0
+BuildArg=TAG=v0.4.1
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+
+[Install]
+WantedBy=default.target
+
