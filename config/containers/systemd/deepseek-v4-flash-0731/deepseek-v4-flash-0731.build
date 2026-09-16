@@ -6,7 +6,7 @@ Wants=network-online.target
 
 [Build]
 ImageTag=localhost/deepseek-v4-flash-0731:v0.4.1-rocm-10.0.0
-File=containers/Containerfile.deepseek-v4-flash-0731
+File=Containerfile
 SetWorkingDirectory=/home/nburr/Desktop/fedora/llamacpp-deepseek-v4-flash-0731
 ForceRM=true
 BuildArg=FEDORA_VERSION=44

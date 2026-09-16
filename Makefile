@@ -125,7 +125,7 @@ MODEL          := $(call tagvar,MODEL)
 IMAGE_TAG    := $(LLAMA_TAG)-rocm-$(ROCM_VERSION)
 TAGGED_IMAGE := $(IMAGE_NAME):$(IMAGE_TAG)
 
-CONTAINERFILE := containers/Containerfile.deepseek-v4-flash-0731
+CONTAINERFILE := Containerfile
 QUADLET_SRC   := config/containers/systemd/deepseek-v4-flash-0731
 DEPLOY_FILES  := podman-compose.yml \
                  $(QUADLET_SRC)/deepseek-v4-flash-0731.build \
