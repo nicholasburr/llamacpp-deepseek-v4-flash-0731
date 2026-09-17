@@ -11,7 +11,7 @@
 # releases); a nightly (bXXXXX) may be pinned for a one-off build via
 # `make new-build TAG=<tag>`.
 #
-# Every deployment method (podman-compose.yml,
+# Every deployment method (compose.yaml,
 # config/containers/systemd/deepseek-v4-flash-0731/*) is kept in sync with this file
 # by `make sync`. See README.md "Tagging & deployment".
 #
