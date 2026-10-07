@@ -1,3 +1,0 @@
-[submodule "llamacpp-shared"]
-	path = llamacpp-shared
-	url = git@github.com:nicholasburr/llamacpp-container.git
